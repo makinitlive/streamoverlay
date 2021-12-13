@@ -5,7 +5,7 @@
     }
   },
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 3456",
     "build": "next build",
     "start": "next start"
   },
