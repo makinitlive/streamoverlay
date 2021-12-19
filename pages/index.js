@@ -1,19 +1,20 @@
 import React, { useState } from 'react'
 import tw from 'twin.macro'
-import { Logo } from './../components'
+import { Logo, TodoItem } from './../components'
 
 const IndexPage = () => {
   const [ showTitle, setShowTitle ] = useState(false)
   const play = false
 
-  let subtitle = 'Now working on'
-  let title = 'Refactoring stream overlay code'
+  const [ title, setTitle ] = useState('Refactoring stream overlay code')
+  const [ subtitle, setSubtitle ] = useState('Now working on')
 
   let animatedTitle = [...title]
 
   const todoItems = [
-    {label: 'Refactoring code', complete: false},
-    {label: 'Live title updating', complete: false},
+    {label: 'Refactoring code', complete: true},
+    {label: 'Live title updating', complete: true},
+    {label: 'Tick animation', complete: true},
     {label: 'Stinger transitions', complete: false},
     {label: 'Title card', complete: false},
     // {label: 'OBS scripts?', complete: false},
@@ -21,11 +22,17 @@ const IndexPage = () => {
   ]
 
   return (
-    <>
-      <div tw='absolute z-50 bottom-0 flex left-0 right-0 height[120px] bg-red-500'>
+    <div tw='height[1200px] relative'>
+      <div tw='absolute flex items-center z-50 bottom-0 flex left-0 right-0 height[120px] bg-blue-700'>
+        <div tw='bg-white height[120px]'>
+          <input name='subtitle' onBlur={e => setSubtitle(e.target.value)} defaultValue={subtitle} tw='text-4xl w-full block' />
+          <input name='title' onBlur={e => setTitle(e.target.value)} defaultValue={title} tw='text-5xl w-full block' />
+        </div>
         <button
-          tw='w-full height[120px] text-white outline-none'
-          onClick={() => setShowTitle(!showTitle)}>Toggle title</button>
+          tw='w-full bg-blue-600 height[120px] text-4xl font-bold text-white outline-none'
+          onClick={() => setShowTitle(!showTitle)}>
+          {(showTitle) ? 'Hide' : 'Show'} title
+        </button>
       </div>
       <div tw='height[1080px] relative'>
         <div tw='absolute bottom-2 left-4 px-8 py-6 '>
@@ -40,7 +47,7 @@ const IndexPage = () => {
             {subtitle}</h2>
           <h1
             css={[
-              tw`text-5xl font-bold relative z-50 transition-all`,
+              tw`text-6xl font-bold relative z-50 transition-all`,
               showTitle ? tw`opacity-100` : tw`opacity-0`
             ]}>
             {animatedTitle.map((letter, index) => (
@@ -75,55 +82,11 @@ const IndexPage = () => {
             <h2 tw='text-white text-right text-xl font-black'>On this stream&hellip;</h2>
           </div>
           {todoItems.map((todo) => (
-            <div
-              css={[
-                tw`p-4 border border-gray-800 border-opacity-20 bg-white flex items-center w-72 font-bold text-2xl rounded-3xl shadow-lg`,
-                todo.complete ? tw`line-through` : tw``,
-              ]}>
-              <div
-                css={[
-                  tw`mr-3 p-1 rounded-lg transition-all h-7 w-7 flex items-center justify-center`,
-                  todo.complete? tw`bg-blue-500` : tw`bg-gray-200`
-                ]}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="10"
-                  viewBox="0 0 14 10"
-                >
-                  <g
-                    fill='none'
-                    fillRule='evenodd'
-                    stroke='none'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='1'
-                  >
-                    <path
-                      className='path'
-                      stroke='#FFF'
-                      strokeWidth='2'
-                      d='M1 5L5 9 13 1'
-                      style={{
-                        strokeDasharray: 17,
-                        transition: `0.3s ease stroke-dashoffset`,
-                        strokeDashoffset: todo.complete? 0 : 17,
-                      }}
-                    />
-                  </g>
-                </svg>
-              </div>
-              <div
-                css={[
-                  tw`transition-opacity`,
-                  todo.complete ? tw`opacity-25` : tw`opacity-100`,
-                ]}
-              >{todo.label}</div>
-            </div>
+            <TodoItem label={todo.label} complete={todo.complete} />
           ))}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
