@@ -1,38 +1,67 @@
 import React, { useState } from 'react'
 import tw from 'twin.macro'
 import { Logo, TodoItem } from './../components'
+import useInterval from './../hooks/use-interval'
 
 const IndexPage = () => {
   const [ showTitle, setShowTitle ] = useState(false)
   const play = false
 
-  const [ title, setTitle ] = useState('Refactoring stream overlay code')
+  const [ title, setTitle ] = useState('Polishing title card')
   const [ subtitle, setSubtitle ] = useState('Now working on')
+
+  const [ automatedTitleDisplay, setAutomatedTitleDisplay] = useState(false)
+  const [ showTitleTime, setShowTitleTime ] = useState(10000)
+  const [ hideTitleTime, setHideTitleTime ] = useState(30000)
+  const [ interval, setInterval ] = useState(showTitleTime)
 
   let animatedTitle = [...title]
 
   const todoItems = [
-    {label: 'Refactoring code', complete: true},
-    {label: 'Live title updating', complete: true},
-    {label: 'Tick animation', complete: true},
-    {label: 'BRB scene', complete: true},
-    {label: 'Stinger transitions', complete: true},
-    {label: 'Title card', complete: false},
+    {label: 'Interval timer title', complete: true},
+    {label: 'Title card timing', complete: false},
+    {label: 'Interactive to-dos', complete: false},
     // {label: 'OBS scripts?', complete: false},
     // {label: 'what do once done?', complete: false},
   ]
 
+  useInterval(() => {
+    setShowTitle(!showTitle)
+    if (!showTitle) {
+      setInterval(showTitleTime)
+    } else {
+      setInterval(hideTitleTime)
+    }
+  }, automatedTitleDisplay ? interval : null)
+
+  const handleFocus = (event) => event.target.select()
+
   return (
     <div tw='height[1200px] relative'>
       <div tw='absolute flex items-center z-50 bottom-0 flex left-0 right-0 height[120px] bg-blue-700'>
-        <div tw='bg-white height[120px]'>
-          <input name='subtitle' onBlur={e => setSubtitle(e.target.value)} defaultValue={subtitle} tw='text-4xl w-full block' />
-          <input name='title' onBlur={e => setTitle(e.target.value)} defaultValue={title} tw='text-5xl w-full block' />
+        <div tw='bg-white w-4/6 flex flex-col justify-center height[120px]'>
+          <input name='subtitle' onFocus={handleFocus} onChange={e => setSubtitle(e.target.value)} defaultValue={subtitle} tw='text-4xl w-full block' />
+          <input name='title' onFocus={handleFocus} onChange={e => setTitle(e.target.value)} defaultValue={title} tw='text-5xl w-full block' />
+        </div>
+        <div tw='bg-white w-2/6 flex flex-col justify-center height[120px]'>
+          <input name='show' onFocus={handleFocus} onChange={e => setShowTitleTime(e.target.value)} defaultValue={showTitleTime} tw='text-4xl w-full block' />
+          <input name='hide' onFocus={handleFocus} onChange={e => setHideTitleTime(e.target.value)} defaultValue={hideTitleTime} tw='text-5xl w-full block' />
         </div>
         <button
-          tw='w-full bg-blue-600 height[120px] text-4xl font-bold text-white outline-none'
+          css={[
+            tw`w-1/3 height[120px] text-4xl font-bold text-white outline-none`,
+            (showTitle) ? tw`bg-blue-600` : tw`bg-gray-600`
+          ]}
           onClick={() => setShowTitle(!showTitle)}>
           {(showTitle) ? 'Hide' : 'Show'} title
+        </button>
+        <button
+          css={[
+            tw`w-1/3 height[120px] text-4xl font-bold text-white outline-none`,
+            (automatedTitleDisplay) ? tw`bg-blue-600` : tw`bg-gray-600`
+          ]}
+          onClick={() => setAutomatedTitleDisplay(!automatedTitleDisplay)}>
+          {(automatedTitleDisplay) ? 'Disable' : 'Enable'} interval
         </button>
       </div>
       <div tw='height[1080px] relative'>
