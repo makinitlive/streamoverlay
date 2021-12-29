@@ -6,18 +6,15 @@ const IndexPage = () => {
   const [ showTitle, setShowTitle ] = useState(false)
   const play = false
 
-  const [ title, setTitle ] = useState('Refactoring stream overlay code')
+  const [ title, setTitle ] = useState('Polishing title card')
   const [ subtitle, setSubtitle ] = useState('Now working on')
 
   let animatedTitle = [...title]
 
   const todoItems = [
-    {label: 'Refactoring code', complete: true},
-    {label: 'Live title updating', complete: true},
-    {label: 'Tick animation', complete: true},
-    {label: 'BRB scene', complete: true},
-    {label: 'Stinger transitions', complete: true},
-    {label: 'Title card', complete: false},
+    {label: 'Interval timer title', complete: false},
+    {label: 'Stinger title timing', complete: false},
+    {label: 'Interactive to-dos', complete: false},
     // {label: 'OBS scripts?', complete: false},
     // {label: 'what do once done?', complete: false},
   ]
