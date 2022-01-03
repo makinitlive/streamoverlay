@@ -7,6 +7,7 @@ const IndexPage = () => {
   const [ showTitle, setShowTitle ] = useState(false)
   const [ showForm, setShowForm ] = useState(false)
   const play = false
+  const showLiveBadge = false
 
   const [ title, setTitle ] = useState('Interactive to-dos')
   const [ subtitle, setSubtitle ] = useState('Now working on')
@@ -56,6 +57,7 @@ const IndexPage = () => {
 
   return (
     <div tw='height[1200px] relative'>
+      { (showLiveBadge) && <div tw='absolute top-2 left-2 font-bold text-2xl rounded-lg bg-red-600 text-white px-5 py-2'>LIVE</div> }
       <TodoForm showForm={showForm} addTodo={addTodo} setShowForm={setShowForm} />
       <div tw='absolute flex items-center z-50 bottom-0 flex left-0 right-0 height[120px] bg-blue-700'>
         <div tw='bg-white w-4/6 flex flex-col justify-center height[120px]'>
