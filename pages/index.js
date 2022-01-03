@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import tw from 'twin.macro'
-import { Logo, TodoItem } from './../components'
+import { Logo, TodoItem, TodoForm } from './../components'
 import useInterval from './../hooks/use-interval'
 
 const IndexPage = () => {
   const [ showTitle, setShowTitle ] = useState(false)
+  const [ showForm, setShowForm ] = useState(false)
   const play = false
 
-  const [ title, setTitle ] = useState('Polishing title card')
+  const [ title, setTitle ] = useState('Interactive to-dos')
   const [ subtitle, setSubtitle ] = useState('Now working on')
 
   const [ automatedTitleDisplay, setAutomatedTitleDisplay] = useState(false)
@@ -17,13 +18,30 @@ const IndexPage = () => {
 
   let animatedTitle = [...title]
 
-  const todoItems = [
+  const [todos, setTodos] = useState([
     {label: 'Interval timer title', complete: true},
-    {label: 'Title card timing', complete: false},
-    {label: 'Interactive to-dos', complete: false},
+    {label: 'Title card timing', complete: true},
+    {label: 'Add new todos', complete: false},
     // {label: 'OBS scripts?', complete: false},
     // {label: 'what do once done?', complete: false},
-  ]
+  ])
+
+  const addTodo = label => {
+    const newTodos = [...todos, { label: label, complete: false }]
+    setTodos(newTodos)
+  }
+
+  const toggleCompletion = index => {
+    const todoList = [...todos]
+    todoList[index].complete = !todoList[index].complete
+    setTodos(todoList)
+  }
+
+  const removeTodo = index => {
+    const newTodos = [...todos]
+    newTodos.splice(index, 1)
+    setTodos(newTodos)
+  }
 
   useInterval(() => {
     setShowTitle(!showTitle)
@@ -38,6 +56,7 @@ const IndexPage = () => {
 
   return (
     <div tw='height[1200px] relative'>
+      <TodoForm showForm={showForm} addTodo={addTodo} setShowForm={setShowForm} />
       <div tw='absolute flex items-center z-50 bottom-0 flex left-0 right-0 height[120px] bg-blue-700'>
         <div tw='bg-white w-4/6 flex flex-col justify-center height[120px]'>
           <input name='subtitle' onFocus={handleFocus} onChange={e => setSubtitle(e.target.value)} defaultValue={subtitle} tw='text-4xl w-full block' />
@@ -63,6 +82,14 @@ const IndexPage = () => {
           onClick={() => setAutomatedTitleDisplay(!automatedTitleDisplay)}>
           {(automatedTitleDisplay) ? 'Disable' : 'Enable'} interval
         </button>
+        <button
+          css={[
+            tw`w-1/3 height[120px] text-4xl font-bold text-white outline-none`,
+            (!showForm) ? tw`bg-blue-600` : tw`bg-gray-600`
+          ]}
+          onClick={() => setShowForm(!showForm)}>
+          {(!showForm) ? 'Create to-do' : 'Cancel'}
+        </button>
       </div>
       <div tw='height[1080px] relative'>
         <div tw='absolute bottom-2 left-4 px-8 py-6 '>
@@ -82,6 +109,7 @@ const IndexPage = () => {
             ]}>
             {animatedTitle.map((letter, index) => (
               <span
+                key={`${index}-${letter}`}
                 style={{
                   display: `inline-block`,
                   transition: `0.2s ease all`,
@@ -111,8 +139,8 @@ const IndexPage = () => {
           <div>
             <h2 tw='text-white text-right text-xl font-black'>On this stream&hellip;</h2>
           </div>
-          {todoItems.map((todo) => (
-            <TodoItem label={todo.label} complete={todo.complete} />
+          {todos.map((todo, index) => (
+            <TodoItem key={index} index={index} label={todo.label} complete={todo.complete} toggleCompletion={toggleCompletion} removeTodo={removeTodo} />
           ))}
         </div>
       </div>
